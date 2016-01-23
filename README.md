@@ -12,7 +12,18 @@ cd git-huck
 ### Addtion Commands: (扩展的命令)
 1. apply-topic [MIP]
 
-  apply the current topic branch to all master(thunk) branchs. 
+  apply the current topic branch to all master(thunk) branchs. example:
+  ![branchs now](https://raw.githubusercontent.com/adintr/git-huck/master/doc_images/branchs_before.jpg)
+  ```
+  git apply-topic master1 master2 master3
+  ```
+  or
+  ```
+  git config huck.masters  "master1 master2 master3"   (do this only once)
+  git apply-topic
+  ```
+  now we get:
+  ![branchs now](https://raw.githubusercontent.com/adintr/git-huck/master/doc_images/branchs_after.jpg)
 
 2. git mulpush, git mulpull
 
