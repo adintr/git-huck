@@ -1,0 +1,6 @@
+#!/bin/bash
+
+fork_point=`git merge-base --fork-point HEAD`
+echo $fork_point
+merge_list=`git rev-list $fork_point..`
+echo $merge_list
