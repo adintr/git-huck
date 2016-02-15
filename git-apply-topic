@@ -1,6 +1,20 @@
 #!/bin/bash
 
-fork_point=`git merge-base --fork-point HEAD`
-echo $fork_point
-merge_list=`git rev-list $fork_point..`
-echo $merge_list
+
+
+function master_list {
+   if [ $# -ge 1 ]
+   then
+       echo $@
+   else
+       git config huck.masters
+   fi
+}
+
+merge_branchs=`master_list $*`
+echo $merge_branchs
+
+#fork_point=`git merge-base --fork-point HEAD`
+# echo $fork_point
+#merge_list=`git rev-list $fork_point..`
+# echo $merge_list
