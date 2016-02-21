@@ -33,7 +33,10 @@ function pickcommit {
 	then
 	    return 5
 	fi
+	current_branch=`git branch --no-color 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
     done
+
+    git cherry-pick $commit
 }
 
 commits=`cat "$atpfile"`
@@ -43,13 +46,13 @@ IFS=$'\n'
 
 is_error=0
 
-for commit in $commits
+for lcommit in $commits
 do
     if [ $is_error -ne 0 ]
     then
-        echo "$commit" >&3
+        echo "$lcommit" >&3
     else
-        pickcommit $commit
+        pickcommit $lcommit
 	pickres=$?
 	if [ $pickres -ne 0 ]
 	then
@@ -58,7 +61,7 @@ do
 	fi
 	if [ $pickres -eq 5 ]
 	then
-	    echo "$commit" >&3
+	    echo "$lcommit" >&3
 	fi
     fi
 done
