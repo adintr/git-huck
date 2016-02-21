@@ -14,4 +14,12 @@ merge_branchs=`master_list $*`
 
 current_branch=`git branch --no-color 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
 project_dir=`git rev-parse --show-toplevel`
-cat "$project_dir/.git/logs/refs/heads/$current_branch"
+branch_begin=`cat "$project_dir/.git/logs/refs/heads/$current_branch" | grep 0000000000000000000000000000000000000000 | awk '{print $2}'`
+
+if [ -z $branch_begin ]
+then
+    echo "reflog is miss or too old, can't find branch begin." 
+    exit 2
+fi
+
+git rev-list $branch_begin..
