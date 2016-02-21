@@ -1,7 +1,5 @@
 #!/bin/bash
 
-
-
 function master_list {
    if [ $# -ge 1 ]
    then
@@ -12,9 +10,8 @@ function master_list {
 }
 
 merge_branchs=`master_list $*`
-echo $merge_branchs
+# echo $merge_branchs
 
-#fork_point=`git merge-base --fork-point HEAD`
-# echo $fork_point
-#merge_list=`git rev-list $fork_point..`
-# echo $merge_list
+current_branch=`git branch --no-color 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
+project_dir=`git rev-parse --show-toplevel`
+cat "$project_dir/.git/logs/refs/heads/$current_branch"
