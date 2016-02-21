@@ -46,11 +46,17 @@ function commit_msg {
 commit_filtkey=`git config huck.keyword`
 current_branch=`git branch --no-color 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
 project_dir=`git rev-parse --show-toplevel`
-branch_begin=`cat "$project_dir/.git/logs/refs/heads/$current_branch" | grep 0000000000000000000000000000000000000000 | awk '{print $2}'`
+branch_begin=`git config huck.lastapply.$current_branch`
 
 if [ -z "$branch_begin" ]
 then
-    echo "reflog is miss or too old, can't find branch begin." >&2
+    branch_begin=`cat "$project_dir/.git/logs/refs/heads/$current_branch" | grep 0000000000000000000000000000000000000000 | awk '{print $2}'`
+fi
+
+
+if [ -z "$branch_begin" ]
+then
+    echo "reflog is miss or too old, can't find the beginning of branch $current_branch" >&2
     exit 2
 fi
 
@@ -63,6 +69,7 @@ then
 fi
 
 exec 3>$project_dir/.git/apply_topic_commits
+echo $current_branch >&3
 
 for branch in $master_branchs
 do

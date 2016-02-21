@@ -39,7 +39,8 @@ function pickcommit {
     git cherry-pick --ff $commit
 }
 
-commits=`cat "$atpfile"`
+topic_branch=`head -1 "$atpfile"`
+commits=`sed '1d' "$atpfile"`
 rm "$atpfile"
 IFSOLD=$IFS
 IFS=$'\n'
@@ -58,6 +59,7 @@ do
 	then
 	    is_error=1
 	    exec 3>$atpfile
+	    echo "$topic_branch" >&3
 	fi
 	if [ $pickres -eq 5 ]
 	then
@@ -68,3 +70,5 @@ done
 
 IFS=$IFSOLD
 
+git config huck.lastapply.$topic_branch $commit
+git checkout $topic_branch
