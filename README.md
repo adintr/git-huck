@@ -10,7 +10,7 @@ cd git-huck
 ```
 
 ### Addtion Commands: (扩展的命令)
-1. apply-topic [MIP]
+1. apply-topic
 
   apply the current topic branch to all master(thunk) branchs. example:
   ![branchs now](https://raw.githubusercontent.com/adintr/git-huck/master/doc_images/branchs_before.jpg)
