@@ -24,7 +24,18 @@ cd git-huck
   ```
   now we get:
   ![branchs now](https://raw.githubusercontent.com/adintr/git-huck/master/doc_images/branchs_after.jpg)
+  
+  More:
+    ```
+    git config huck.keyword <keyword>
+    ```
+    will only pick commit which include keyword as message to target branchs.
 
+  ```
+  git apply-topic --continue
+  ```
+  if some conflict in merge, after solve it, use this to continue.
+  
 2. git mulpush, git mulpull
 
   for each added remote repository, run git push/pull on it. (对每一个添加的远程仓库使用 git push/pull 命令)
