@@ -39,10 +39,6 @@ then
    exit 1
 fi
 
-function commit_msg {
-  git log --pretty=format:"%s" $1^..$1
-}
-
 commit_filtkey=`git config huck.keyword`
 current_branch=`git branch --no-color 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
 project_dir=`git rev-parse --show-toplevel`

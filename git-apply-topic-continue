@@ -19,6 +19,10 @@ then
     exit 1
 fi
 
+function commit_msg {
+  git log --pretty=format:"%s" $1^..$1
+}
+
 function pickcommit {
     branch=`echo $1 | awk '{ print $1 }'`
     commit=`echo $1 | awk '{ print $2 }'`
@@ -34,6 +38,33 @@ function pickcommit {
 	    return 5
 	fi
 	current_branch=`git branch --no-color 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
+    done
+
+    commitmsg=`commit_msg $commit`
+    likelycommits=`git log --pretty=format:"%H" --grep "$commitmsg"`
+
+    for likelycmt in $likelycommits
+    do
+        if [ $likelycmt == $commit ]
+	then
+	    echo "$commit is already exist in $branch, skiped."
+	    return 0
+	fi
+
+	chage1=`git log --pretty=format:"" -p $likelycmt^..$likelycmt | sed '/^index /d' | md5sum`
+	chage2=`git log --pretty=format:"" -p $commit^..$commit | sed '/^index /d' | md5sum`
+
+	if [ $chage1 == $chage2 ]
+	then
+	    echo "diff of $commit is same as $likelycmt, skiped."
+	    return 0
+	fi
+
+        read -p "$commit is like $likelycmt, is this commit should skip? (Yes/No): "  isSkip
+	if [ $isSkip == "Yes" ]
+	    echo "skiped $commit ..."
+	    return 0
+	fi
     done
 
     git cherry-pick --ff $commit
