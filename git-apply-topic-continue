@@ -19,22 +19,49 @@ then
     exit 1
 fi
 
+function pickcommit {
+    branch=`echo $1 | awk '{ print $1 }'`
+    commit=`echo $1 | awk '{ print $2 }'`
+
+    echo "try apply $commit to $branch ..."
+    current_branch=`git branch --no-color 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
+    while [ $current_branch != $branch ]
+    do
+        git checkout $branch
+	checkres=$?
+	if [ $checkres -ne 0 ]
+	then
+	    return 5
+	fi
+    done
+}
+
 commits=`cat "$atpfile"`
 rm "$atpfile"
-IFS.OLD=$IFS
+IFSOLD=$IFS
 IFS=$'\n'
 
 is_error=0
 
-for commit in commits
+for commit in $commits
 do
     if [ $is_error -ne 0 ]
     then
         echo "$commit" >&3
     else
         pickcommit $commit
+	pickres=$?
+	if [ $pickres -ne 0 ]
+	then
+	    is_error=1
+	    exec 3>$atpfile
+	fi
+	if [ $pickres -eq 5 ]
+	then
+	    echo "$commit" >&3
+	fi
     fi
 done
 
-IFS=$IFS.OLD
+IFS=$IFSOLD
 
