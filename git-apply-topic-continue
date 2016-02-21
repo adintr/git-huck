@@ -62,6 +62,7 @@ function pickcommit {
 
         read -p "$commit is like $likelycmt, is this commit should skip? (Yes/No): "  isSkip
 	if [ $isSkip == "Yes" ]
+	then
 	    echo "skiped $commit ..."
 	    return 0
 	fi
