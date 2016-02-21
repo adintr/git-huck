@@ -1,17 +1,51 @@
 #!/bin/bash
 
-function master_list {
-   if [ $# -ge 1 ]
-   then
-       echo $@
-   else
-       git config huck.masters
-   fi
+is_continue_mode=0
+is_abort_mode=0
+master_branchs=''
+
+while [ -n "$1" ]
+do
+   case "$1" in
+   --continue) is_continue_mode=1 ;;
+   --abort) is_abort_mode=1 ;;
+   -*) echo unknown option $1 >&2
+       exit 1;;
+   *) master_branchs="$master_branchs $1" ;;
+   esac
+   shift
+done
+
+if [ $is_continue_mode -ne 0 ]
+then
+   echo 'run in continue mode'
+   exit 0
+fi
+
+if [ $is_abort_mode -ne 0 ]
+then
+   echo 'run in abort mode'
+   exit 0
+fi
+
+if [ -z "$master_branchs" ]
+then
+   master_branchs=`git config huck.masters`
+fi
+
+if [ -z "$master_branchs" ]
+then
+   echo 'no master branchs to be apply.' >&2
+   exit 1
+fi
+
+echo $master_branchs
+
+function commit_msg {
+  git log --pretty=format:"%s" $1^..$1
 }
 
-merge_branchs=`master_list $*`
-# echo $merge_branchs
-
+commit_filtkey=`git config huck.keyword`
 current_branch=`git branch --no-color 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
 project_dir=`git rev-parse --show-toplevel`
 branch_begin=`cat "$project_dir/.git/logs/refs/heads/$current_branch" | grep 0000000000000000000000000000000000000000 | awk '{print $2}'`
@@ -22,4 +56,10 @@ then
     exit 2
 fi
 
-git rev-list $branch_begin..
+merge_commits=`git rev-list --grep "$commit_filtkey" --reverse $branch_begin..`
+
+for commit in $merge_commits
+do
+     echo $commit
+     commit_msg $commit
+done
