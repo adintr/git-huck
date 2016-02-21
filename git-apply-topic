@@ -18,13 +18,13 @@ done
 
 if [ $is_continue_mode -ne 0 ]
 then
-   echo 'run in continue mode'
-   exit 0
+   git apply-topic-continue
+   exit $?
 fi
 
 if [ $is_abort_mode -ne 0 ]
 then
-   echo 'run in abort mode'
+   echo 'abort option is not support now, try to update for new version.'
    exit 0
 fi
 
@@ -39,8 +39,6 @@ then
    exit 1
 fi
 
-echo $master_branchs
-
 function commit_msg {
   git log --pretty=format:"%s" $1^..$1
 }
@@ -50,16 +48,30 @@ current_branch=`git branch --no-color 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(
 project_dir=`git rev-parse --show-toplevel`
 branch_begin=`cat "$project_dir/.git/logs/refs/heads/$current_branch" | grep 0000000000000000000000000000000000000000 | awk '{print $2}'`
 
-if [ -z $branch_begin ]
+if [ -z "$branch_begin" ]
 then
-    echo "reflog is miss or too old, can't find branch begin." 
+    echo "reflog is miss or too old, can't find branch begin." >&2
     exit 2
 fi
 
 merge_commits=`git rev-list --grep "$commit_filtkey" --reverse $branch_begin..`
 
-for commit in $merge_commits
+if [ -z "$merge_commits" ]
+then
+    echo "no commit need to apply to other branchs."
+    exit 0
+fi
+
+exec 3>$project_dir/.git/apply_topic_commits
+
+for branch in $master_branchs
 do
-     echo $commit
-     commit_msg $commit
+    for commit in $merge_commits
+    do
+    echo $branch $commit >&3
+    done
 done
+
+exec 3>&-
+
+git apply-topic-continue
