@@ -72,6 +72,7 @@ function pickcommit {
 }
 
 topic_branch=`head -1 "$atpfile"`
+topic_branch_askey=`echo $topic_branch | tr -d "_"`
 commits=`sed '1d' "$atpfile"`
 rm "$atpfile"
 IFSOLD=$IFS
@@ -102,5 +103,5 @@ done
 
 IFS=$IFSOLD
 
-git config huck.lastapply.$topic_branch $commit
+git config huck.lastapply.$topic_branch_askey $commit
 git checkout $topic_branch

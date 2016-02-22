@@ -41,8 +41,9 @@ fi
 
 commit_filtkey=`git config huck.keyword`
 current_branch=`git branch --no-color 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
+current_branch_askey=`echo $current_branch | tr -d "_"`
 project_dir=`git rev-parse --show-toplevel`
-branch_begin=`git config huck.lastapply.$current_branch`
+branch_begin=`git config huck.lastapply.$current_branch_askey`
 
 if [ -z "$branch_begin" ]
 then
