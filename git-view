@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [ $# -ne 2 ]; then
+    echo 'Useage: git view <commit object>  <file path>'
+    exit -1
+fi
+
+FOBJ=$1:`git rev-parse --show-prefix`$2
+FOUT=`mktemp`.`basename $2`
+
+git cat-file -p $FOBJ > $FOUT
+start $FOUT
+rm $FOUT
+
