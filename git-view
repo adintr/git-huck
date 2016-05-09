@@ -8,10 +8,11 @@ fi
 FOBJ=$1:`git rev-parse --show-prefix`$2
 FOUT=`mktemp`.`basename $2`
 WOUT=`cygpath -p $FOUT -a -w 2>/dev/null`
+ISCYGENV=$?
 
 git cat-file -p $FOBJ > $FOUT
 
-if [ $? -eq 0 ]; then
+if [ $ISCYGENV -eq 0 ]; then
     start $WOUT
     sleep 2
 else
