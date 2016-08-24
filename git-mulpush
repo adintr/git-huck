@@ -3,5 +3,17 @@
 for repos in $(git remote)
 do
 	echo "push to $repos ..."
-	git push $repos $*
+	branchs_list=`git config huck.push.$repos`
+
+	if [ -z "$branchs_list" ]
+	then
+
+		git push $repos $*
+	else
+
+		for branchs in $branchs_list
+		do
+			git push $repos $branchs $*
+		done
+	fi
 done
