@@ -40,7 +40,7 @@ cd git-huck
 
   for each added remote repository, run git push/pull on it. (对每一个添加的远程仓库使用 git push/pull 命令)
   ```
-  git config huck.push.<remote_repository>  loc_branch1:remote_branch1 loc_branch2:remote_branch2 ...
+  git config huck.push.<remote_repository>  "loc_branch1:remote_branch1 loc_branch2:remote_branch2 ..."
   ```
   config the branch to push for each respository. (配置每一个远程仓库需要 push 的分支)
 
