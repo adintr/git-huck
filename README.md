@@ -46,4 +46,6 @@ cd git-huck
 
 3. git view
   open the file of the given commit. (打开指定的版本中的文件)
+  ```
   git view <commit object>  <file path>
+  ```
