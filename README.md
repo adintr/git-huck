@@ -2,7 +2,7 @@
 
   a group of script tools make git easier to use. (git-huck 是一组更方便使用 git 的脚本工具)
 
-###INSTALL (安装)
+### INSTALL (安装)
 ```
 git clone https://github.com/adintr/git-huck.git git-huck
 cd git-huck
@@ -44,3 +44,6 @@ cd git-huck
   ```
   config the branch to push for each respository. (配置每一个远程仓库需要 push 的分支)
 
+3. git view
+  open the file of the given commit. (打开指定的版本中的文件)
+  git view <commit object>  <file path>
