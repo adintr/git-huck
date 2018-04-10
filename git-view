@@ -13,8 +13,9 @@ ISCYGENV=$?
 git cat-file -p $FOBJ > $FOUT
 
 if [ $ISCYGENV -eq 0 ]; then
-    start $WOUT
-    sleep 2
+    vi $FOUT
+#    start $WOUT
+#    sleep 2
 else
     vi $FOUT
 fi
